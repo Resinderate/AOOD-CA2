@@ -52,6 +52,7 @@ public class MyScanner
 	 */
 	public String nextLine(String strPrompt, int minLength, int maxLength)
 	{
+                kb.nextLine();
 		String strIn = "";
 		int strlength = 0;
 		boolean bContinue = true;
@@ -66,8 +67,7 @@ public class MyScanner
 			}
 			else
 			{
-				System.out.println("Invalid string length: Range is " 
-									+ minLength + " - " + maxLength);
+				System.out.println("Invalid string length: Range is " + minLength + " - " + maxLength);
 			}
 		}
 		
@@ -100,7 +100,7 @@ public class MyScanner
 									+ lo + " - " + hi);
 			}
 		}
-		
+                
 		return value;
 	}	
 	
