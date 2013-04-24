@@ -10,7 +10,7 @@ public class DatabaseContainer
     private final String fileDir = "DBFiles";
     
     private ArrayList<String> fileNames = null;
-    public StudentRandomFile currentStudentFile = null;
+    private StudentRandomFile currentStudentFile = null;
     
     
     
@@ -20,6 +20,11 @@ public class DatabaseContainer
         File dir = new File(fileDir);
         if(!dir.exists())
             dir.mkdirs();
+    }
+    
+    public StudentRandomFile getFile()
+    {
+        return currentStudentFile;
     }
     
     public ArrayList<String> getFileNames()
