@@ -67,6 +67,6 @@ public class Student {
     }
 
     public String toString() {
-        return "Student{" + "firstName=" + firstName + ", lastName=" + lastName + ", ID=" + ID + ", age=" + age + ", sex=" + sex + ", currentGPA=" + currentGPA + '}';
+        return "firstName: " + firstName + "\nlastName: " + lastName + "\nID: " + ID + "\nage: " + age + "\nsex: " + sex + "\ncurrentGPA: " + currentGPA;
     }
 }
