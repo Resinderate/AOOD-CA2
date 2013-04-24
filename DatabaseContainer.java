@@ -35,6 +35,14 @@ public class DatabaseContainer
         return existingFiles;
     }
     
+    public void printFileNames()
+    {
+        for(String fileName : fileNames)
+        {
+            System.out.println(fileName);
+        }
+    }
+    
     public boolean create(String fileName)
     {
         if(!fileExists(fileName))
@@ -42,6 +50,7 @@ public class DatabaseContainer
             File f = new File(fileDir + "/" + fileName);
             try {
                 f.createNewFile();
+                fileNames.add(fileName);
             } catch (IOException ex) {
                 System.out.println("IOException in DatabaseContainer::Create");
             }
@@ -49,15 +58,18 @@ public class DatabaseContainer
         }
         else
             return false;
-        //if so get another
+            //if so get another
     }
     
-    public void open(String fileName)
+    public boolean open(String fileName)
     {
         if(fileExists(fileName))
         {
             currentStudentFile =  new StudentRandomFile(fileDir + "/" +fileName);
+            return true;
         }
+        else 
+            return false;
     }
     
     public boolean delete(String fileName)
@@ -79,5 +91,13 @@ public class DatabaseContainer
             return true;
         else
             return false;
-    }  
+    }
+    
+    public boolean isEmpty()
+    {
+        if(fileNames.isEmpty())
+            return true;
+        else
+            return false;
+    }
 }
