@@ -67,12 +67,6 @@ public class StudentRandomFile {
     //  Private  ::  Reading Students
     //**********************
     
-    private int getRecordCount() throws IOException
-    {
-        int recordCount = (int) studentsFile.length() / RECORD_SIZE;
-        return recordCount;
-    }
-    
     private int getRecordNumber(int studentCode)
     {
         for(int i = 0; i<studentCodes.size();i++)
@@ -134,6 +128,11 @@ public class StudentRandomFile {
     //  Public  ::  Reading Students
     //**********************
     
+    public int getRecordCount() throws IOException
+    {
+        int recordCount = (int) studentsFile.length() / RECORD_SIZE;
+        return recordCount;
+    }
     
     
     public ArrayList<Student> getStudents()
