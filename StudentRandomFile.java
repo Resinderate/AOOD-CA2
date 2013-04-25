@@ -128,9 +128,14 @@ public class StudentRandomFile {
     //  Public  ::  Reading Students
     //**********************
     
-    public int getRecordCount() throws IOException
+    public int getRecordCount()
     {
-        int recordCount = (int) studentsFile.length() / RECORD_SIZE;
+        int recordCount = 0;
+        try {
+            recordCount = (int) studentsFile.length() / RECORD_SIZE;
+        } catch (IOException ex) {
+            Logger.getLogger(StudentRandomFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return recordCount;
     }
     
@@ -157,10 +162,20 @@ public class StudentRandomFile {
     
     public Student getStudent(int studentCode)
     {
+        //The key principle outlined here is to never read in the full set of data ever.
         try
         {
+            Student student;
             int recordNumber = this.getRecordNumber(studentCode);
-            Student student = this.getRecord(recordNumber);
+            if(recordNumber != -1)
+            {
+            student = this.getRecord(recordNumber);
+            }
+            else
+            {
+                student = null;
+            }
+            
             return student;
         }
         catch(IOException ioe)
@@ -170,39 +185,49 @@ public class StudentRandomFile {
         }
     }
     
-    public ArrayList<Student> searchByRange(int hi, int low, boolean type)
+    public ArrayList<Student> searchByRange(int hi, int low, boolean type) throws IOException
     {
-        ArrayList<Student> students = getStudents();
+        //The key principle outlined here is to never read in the full set of data ever.
+        ArrayList<Student> results = new ArrayList<Student>();
         
-        for(int i = 0; i < students.size(); i++)
+        for(int i = 0; i < getRecordCount(); i++)
         {
             if(type == AGE_TYPE)
             {
-                if(students.get(i).getAge() > hi || students.get(i).getAge() < low)
-                    students.remove(i);
+                studentsFile.seek((i * RECORD_SIZE) + ID_SIZE + F_NAME_SIZE + S_NAME_SIZE); //48, age is last field.
+                int field = studentsFile.readInt();
+                if(field <= hi || field >= low)
+                    results.add(getRecord(i));
             }
             else //GPA_TYPE
             {
-                if(students.get(i).getCurrentGPA() > hi || students.get(i).getCurrentGPA() < low)
-                    students.remove(i);
+                studentsFile.seek((i * RECORD_SIZE) + ID_SIZE + F_NAME_SIZE + S_NAME_SIZE + AGE_SIZE + SEX_SIZE); //53, 2nd last field
+                double field = studentsFile.readDouble();
+                if(field <= hi || field >= low)
+                    results.add(getRecord(i));
             }
-            //ID - 10000000001
+            
         }
-        return students;
+        return results;
     }
     
-    public ArrayList<Student> searchByRegex(String regex)
+    public ArrayList<Student> searchByRegex(String regex) throws IOException
     {
-        ArrayList<Student> students = getStudents();
+        ArrayList<Student> results = new ArrayList<Student>();
         
-        for(int i = 0; i < students.size(); i++)
+        for(int i = 0; i < getRecordCount(); i++)
         {
-            if(!Pattern.matches(regex, students.get(i).getFirstName()))
-                students.remove(i);
-            else if(!Pattern.matches(regex, students.get(i).getLastName()))
-                students.remove(i);
+            studentsFile.seek((i * RECORD_SIZE) + ID_SIZE); //4, f_name is 2nd field
+            String field = IOStringUtils.readFixedString(studentsFile, F_NAME_LENGTH);
+            if(!Pattern.matches(regex, field))
+                results.add(getRecord(i));
+            else //if first name didn't match
+                field = IOStringUtils.readFixedString(studentsFile, S_NAME_LENGTH);
+            if(!Pattern.matches(regex, field))
+                results.add(getRecord(i));
+            
         }
-        return students;
+        return results;
     }
     
     //**********************

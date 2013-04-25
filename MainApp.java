@@ -165,52 +165,55 @@ public class MainApp {
     public void editRecord(DatabaseContainer db, MyScanner sc)
     {
         int id = sc.nextInt("Please enter the id of the student you wish to edit: ", 1000000000, 1999999999);
-        Student s = db.getFile().getStudent(id);
-        int choice = sc.nextInt("Please enter the number of the field you wish to edit:"
-                + "\n1. ID"
-                + "\n2. First Name"
-                + "\n3. Last Name"
-                + "\n4. Age"
-                + "\n5. Sex"
-                + "\n6. Current GPA", 1, 6);
-        
-        if     (choice == 1)
+        if(db.getFile().getStudent(id) != null)
         {
-            s.setID(sc.nextInt("Please enter student ID (1000000000 - 1999999999): ", 1000000000, 1999999999));
+            Student s = db.getFile().getStudent(id);
+            int choice = sc.nextInt("Please enter the number of the field you wish to edit:"
+                    + "\n1. First Name"
+                    + "\n2. Last Name"
+                    + "\n3. Age"
+                    + "\n4. Sex"
+                    + "\n5. Current GPA", 1, 5);
+
+            if(choice == 1)
+            {
+                s.setFirstName(sc.nextLine("Please enter student First Name: ", 1, 50));
+            }
+            else if(choice == 2)
+            {
+                s.setLastName(sc.nextLine("Please enter student Last Name: ", 1, 50));
+            }
+            else if(choice == 3)
+            {
+                s.setAge(sc.nextInt("Please enter student age: "));
+            }   
+            else if(choice == 4)
+            {
+                boolean sex;
+                String sexStr =  sc.validate("Please enter the student sex (male / female)", "male|female");
+                if(sexStr.equals("male"))
+                    sex = true;
+                else
+                    sex = false;
+                s.setSex(sex);
+            }   
+            else if(choice == 5)
+            {
+                s.setCurrentGPA(sc.nextDouble("Please enter the student's current GPA (0-100): ", 0.0, 100.0));
+            }
+            System.out.println("Record Edited!");
         }
-        else if(choice == 2)
-        {
-            s.setFirstName(sc.nextLine("Please enter student First Name: ", 1, 50));
-        }
-        else if(choice == 3)
-        {
-            s.setLastName(sc.nextLine("Please enter student Last Name: ", 1, 50));
-        }
-        else if(choice == 4)
-        {
-            s.setAge(sc.nextInt("Please enter student age: "));
-        }   
-        else if(choice == 5)
-        {
-            boolean sex;
-            String sexStr =  sc.validate("Please enter the student sex (male / female)", "male|female");
-            if(sexStr.equals("male"))
-                sex = true;
-            else
-                sex = false;
-            s.setSex(sex);
-        }   
-        else if(choice == 6)
-        {
-            s.setCurrentGPA(sc.nextDouble("Please enter the student's current GPA (0-100): ", 0.0, 100.0));
-        }
-        System.out.println("Record Edited!");
+        else
+            System.out.println("Student not found!");
     }
     
     public void searchByRegex(DatabaseContainer db, MyScanner sc)
     {
         String regex = sc.nextLine("Please enter the regex you want to search with: ", 1, 100);
-        ArrayList<Student> results = db.getFile().searchByRegex(regex);
+        ArrayList<Student> results;
+        try {
+            results = db.getFile().searchByRegex(regex);
+        
         
         if(!results.isEmpty())
         {
@@ -223,6 +226,9 @@ public class MainApp {
         }
         else
             System.out.println("No results found!");
+        } catch (IOException ex) {
+            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void searchByRange(DatabaseContainer db, MyScanner sc)
@@ -237,7 +243,10 @@ public class MainApp {
         int lo = sc.nextInt("What is the lower range of your search?");
         int hi = sc.nextInt("What is the higher ranger of your search?");
         
-        ArrayList<Student> results = db.getFile().searchByRange(hi, lo, type);
+        ArrayList<Student> results;
+        try {
+            results = db.getFile().searchByRange(hi, lo, type);
+        
         
         if(!results.isEmpty())
         {
@@ -250,14 +259,21 @@ public class MainApp {
         }
         else
             System.out.println("No results found!");
+        } catch (IOException ex) {
+            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void deleteRecord(DatabaseContainer db, MyScanner sc)
     {
         int id = sc.nextInt("Please enter the id of the sudent you wish to delete: ", 1000000000, 1999999999);
-        
-        if(db.getFile().deleteStudent(db.getFile().getStudent(id)))
-            System.out.println("Delete successful!");
+        if(db.getFile().getStudent(id) != null)
+        {
+            if(db.getFile().deleteStudent(db.getFile().getStudent(id)))
+                System.out.println("Delete successful!");
+            else
+                System.out.println("That student appears to be gone already!");
+        }
         else
             System.out.println("That student appears to be gone already!");
     }
@@ -289,11 +305,7 @@ public class MainApp {
     
     public void showCount(DatabaseContainer db)
     {
-        try {
-            System.out.println("There are " + db.getFile().getRecordCount() + " total records in the database.");
-        } catch (IOException ex) {
-            System.out.println("IOException in MainApp::showCount -> StudentRandomFile::getRecordCount()");
-        }
+            System.out.println("There are " + db.getFile().getRecordCount() + " total records in the database.");   
     }
     
 }
