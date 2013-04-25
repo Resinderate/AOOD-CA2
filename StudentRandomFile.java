@@ -151,7 +151,7 @@ public class StudentRandomFile {
                 Student student = this.getRecord(i);
                 students.add(student);
             }
-            return students;
+            return students; 
         }
         catch(IOException ioe)
         {
@@ -162,7 +162,6 @@ public class StudentRandomFile {
     
     public Student getStudent(int studentCode)
     {
-        //The key principle outlined here is to never read in the full set of data ever.
         try
         {
             Student student;
@@ -211,8 +210,13 @@ public class StudentRandomFile {
         return results;
     }
     
+    /*
+     *  Trying to enforce a good practise of leaving as much of the data out of memory as you can.
+     *  Not saving additional list of information in memory, simply accessing that information straight from the file when we need it.
+     */
     public ArrayList<Student> searchByRegex(String regex) throws IOException
     {
+        //The key principle outlined here is to never read in the full set of data ever.
         ArrayList<Student> results = new ArrayList<Student>();
         
         for(int i = 0; i < getRecordCount(); i++)
@@ -287,6 +291,10 @@ public class StudentRandomFile {
         
     }
     
+    /*
+     * Quick Delete.
+     * As the order is not important in the file, we can simply delete any index, and then fill it with the one on the end.
+     */
     public boolean deleteStudent(Student student)
     {
         try
@@ -330,5 +338,4 @@ public class StudentRandomFile {
             return false;
         }
     }
-    
 }
