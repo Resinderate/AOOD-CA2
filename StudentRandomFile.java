@@ -260,9 +260,14 @@ public class StudentRandomFile {
     public boolean addStudent(Student student)
     {
         try {
-            int recordNumber = (int)studentsFile.length() / RECORD_SIZE + 1;
-            studentCodes.put(student.getID(), recordNumber);
-            return this.writeStudent(student, recordNumber);       
+            if(!studentCodes.containsKey(student.getID()))
+            {
+                int recordNumber = (int)studentsFile.length() / RECORD_SIZE + 1;
+                studentCodes.put(student.getID(), recordNumber);
+                return this.writeStudent(student, recordNumber);    
+            }
+            else
+                return false;
         } catch (IOException ex) {
             Logger.getLogger(StudentRandomFile.class.getName()).log(Level.SEVERE, null, ex);
             return false;
