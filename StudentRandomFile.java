@@ -307,19 +307,26 @@ public class StudentRandomFile {
             {
                 int deletionIndex = student.getID();
                 Student lastStudent = getRecord((int)studentsFile.length()/ RECORD_SIZE - RECORD_SIZE); //Last item in the file NOT SURE IF RIGHT
+                
+                if(getRecordCount() > 1)
+                {
+                    //Remove last from hash map
+                    studentCodes.remove(lastStudent.getID());
+                    //add with same value as the one to be deleted
+                    studentCodes.put(lastStudent.getID(), getRecordNumber(student.getID()));
+                    //Remove k,v to be deleted.
+                    studentCodes.remove(student.getID());
 
-                //Remove last from hash map
-                studentCodes.remove(lastStudent.getID());
-                //add with same value as the one to be deleted
-                studentCodes.put(lastStudent.getID(), getRecordNumber(student.getID()));
-                //Remove k,v to be deleted.
-                studentCodes.remove(student.getID());
-
-                //Update student, will get written into the space you want removed
-                updateStudent(lastStudent);
-                //set the file to be one file shorter, removing the duplicate.
-                studentsFile.setLength(studentsFile.length() - RECORD_SIZE);
-
+                    //Update student, will get written into the space you want removed
+                    updateStudent(lastStudent);
+                    //set the file to be one file shorter, removing the duplicate.
+                    studentsFile.setLength(studentsFile.length() - RECORD_SIZE);
+                }
+                else
+                {
+                    studentCodes.remove(student.getID());
+                    studentsFile.setLength(studentsFile.length() - RECORD_SIZE);
+                }
                 return true;
             }
             else
