@@ -218,7 +218,7 @@ public class MainApp {
             results = db.getFile().searchByRegex(regex);
         
         
-        if(!results.isEmpty())
+        if(results != null)
         {
             System.out.println("Results found: ");
             for(Student s : results)
@@ -251,7 +251,7 @@ public class MainApp {
             results = db.getFile().searchByRange(hi, lo, type);
         
         
-        if(!results.isEmpty())
+        if(results != null)
         {
             System.out.println("Results found: ");
             for(Student s : results)
