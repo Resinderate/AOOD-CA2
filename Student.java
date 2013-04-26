@@ -67,6 +67,11 @@ public class Student {
     }
 
     public String toString() {
-        return "firstName: " + firstName + "\nlastName: " + lastName + "\nID: " + ID + "\nage: " + age + "\nsex: " + sex + "\ncurrentGPA: " + currentGPA;
+        String sexStr = "";
+        if(sex == true)
+            sexStr = "male";
+        else
+            sexStr = "female";
+        return "firstName: " + firstName + "\nlastName: " + lastName + "\nID: " + ID + "\nage: " + age + "\nsex: " + sexStr + "\ncurrentGPA: " + currentGPA;
     }
 }
