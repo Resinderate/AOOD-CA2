@@ -288,19 +288,7 @@ public class MainApp {
     
     public void showAll(DatabaseContainer db)
     {
-        ArrayList<Student> results = db.getFile().getStudents();
-        
-        if(!results.isEmpty())
-        {
-            System.err.println("All the entries: ");
-            for(Student s : results)
-            {
-                System.out.println("**********");
-                System.out.println(s);
-            }
-        }
-        else
-            System.out.println("No entries found!");
+       db.getFile().printAllStudents();
     }
     
     public void showCount(DatabaseContainer db)
