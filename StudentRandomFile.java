@@ -248,7 +248,6 @@ public class StudentRandomFile {
             studentsFile.writeInt(student.getAge());
             studentsFile.writeBoolean(student.isSex());
             studentsFile.writeDouble(student.getCurrentGPA());
-            System.out.println("File Size after: " + studentsFile.length());
             return true;
         } catch (IOException ex) {
             Logger.getLogger(StudentRandomFile.class.getName()).log(Level.SEVERE, null, ex);
