@@ -194,18 +194,20 @@ public class StudentRandomFile {
             {
                 studentsFile.seek((i * RECORD_SIZE) + ID_SIZE + F_NAME_SIZE + S_NAME_SIZE); //48, age is last field.
                 int field = studentsFile.readInt();
-                if(field <= hi || field >= low)
+                if(field <= hi && field >= low)
                     results.add(getRecord(i));
             }
             else //GPA_TYPE
             {
                 studentsFile.seek((i * RECORD_SIZE) + ID_SIZE + F_NAME_SIZE + S_NAME_SIZE + AGE_SIZE + SEX_SIZE); //53, 2nd last field
                 double field = studentsFile.readDouble();
-                if(field <= hi || field >= low)
+                if(field <= hi && field >= low)
                     results.add(getRecord(i));
             }
             
         }
+        if(results.isEmpty())
+            results = null;
         return results;
     }
     
@@ -230,6 +232,8 @@ public class StudentRandomFile {
                 results.add(getRecord(i));
             
         }
+        if(results.isEmpty())
+            results = null;
         return results;
     }
     
