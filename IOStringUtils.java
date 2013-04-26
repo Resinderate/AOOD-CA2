@@ -5,23 +5,26 @@ import java.io.*;
 public class IOStringUtils {
     public static void writeFixedString(DataOutput out, int length, String s) throws IOException
     {
+        StringBuilder sb = new StringBuilder();
         for(int i = 0; i < length; i++)
         {
             if(i < s.length())
-                out.writeChar(s.charAt(i)); //write char
+                sb.append(s.charAt(i));     //append char
             else
-                out.writeChar(0);           //write unicode zero
+                sb.append(0);           //write unicode zero
         }
+        out.writeUTF(sb.toString());
     }
     
     public static String readFixedString(DataInput in, int length) throws IOException
     {
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < length; i++)
+        String result = in.readUTF();
+        for(int i = 0; i < result.length(); i++)
         {
-            char c = in.readChar();
+            char c = result.charAt(i);
             //if char is not Unicode zero add to string
-            if(c != 0)
+            if(c != '0')
                 sb.append(c);
         }
         return sb.toString();
