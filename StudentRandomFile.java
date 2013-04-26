@@ -20,8 +20,8 @@ public class StudentRandomFile {
     public final boolean GPA_TYPE = true;
     
     //Size in bytes for all the fields
-    private final int F_NAME_SIZE = F_NAME_LENGTH + 2;      // 2 + x chars allowed.
-    private final int S_NAME_SIZE = S_NAME_LENGTH + 2;      // 2 + x chars allowed.
+    private final int F_NAME_SIZE = F_NAME_LENGTH + 2;      // Length + 2
+    private final int S_NAME_SIZE = S_NAME_LENGTH + 2;      // Length + 2
     private final int ID_SIZE = 4;                          // Int
     private final int SEX_SIZE = 1;                         // Boolean
     private final int CURRENT_GPA_SIZE = 8;                 // Double
@@ -69,15 +69,10 @@ public class StudentRandomFile {
     
     private int getRecordNumber(int studentCode)
     {
-        for(int i = 0; i<studentCodes.size();i++)
-        {
-            int code = studentCodes.get(i);
-            if(studentCode == code)
-            {
-                return i;
-            }
-        }
-        return -1;
+        if(studentCodes.containsKey(studentCode))
+            return studentCodes.get(studentCode);
+        else
+            return -1;
     }
     
     private Student getRecord(int recordNumber) throws IOException
@@ -140,25 +135,29 @@ public class StudentRandomFile {
     }
     
     
-    public ArrayList<Student> getStudents()
+    public void printAllStudents()
     {
-        ArrayList<Student> students = new ArrayList<Student>();
-        
         try
         {
-            for(int i = 0; i < getRecordCount(); i++)
+            if(getRecordCount() > 0)
             {
-                Student student = this.getRecord(i);
-                students.add(student);
+                for(int i = 0; i < getRecordCount(); i++)
+                {
+                    Student s = this.getRecord(i);
+                    System.out.println("**********");
+                    System.out.println(s);
+                }
             }
-            return students; 
+            else
+                System.out.println("No entries found!");
         }
         catch(IOException ioe)
         {
             //report error
-            return null;
+            
         }
     }
+    
     
     public Student getStudent(int studentCode)
     {
@@ -243,12 +242,13 @@ public class StudentRandomFile {
         try 
         {    
             studentsFile.seek(recordNumber * RECORD_SIZE);
-            studentsFile.write(student.getID());
+            studentsFile.writeInt(student.getID());
             IOStringUtils.writeFixedString(studentsFile,F_NAME_LENGTH, student.getFirstName());
             IOStringUtils.writeFixedString(studentsFile,S_NAME_LENGTH, student.getLastName());
             studentsFile.writeInt(student.getAge());
             studentsFile.writeBoolean(student.isSex());
             studentsFile.writeDouble(student.getCurrentGPA());
+            System.out.println("File Size after: " + studentsFile.length());
             return true;
         } catch (IOException ex) {
             Logger.getLogger(StudentRandomFile.class.getName()).log(Level.SEVERE, null, ex);
@@ -263,12 +263,14 @@ public class StudentRandomFile {
     
     public boolean addStudent(Student student)
     {
+        
         try {
+            System.out.println("File Size before: " + studentsFile.length());
             if(!studentCodes.containsKey(student.getID()))
             {
-                int recordNumber = (int)studentsFile.length() / RECORD_SIZE + 1;
+                int recordNumber = (int)studentsFile.length() / RECORD_SIZE;
                 studentCodes.put(student.getID(), recordNumber);
-                return this.writeStudent(student, recordNumber);    
+                return this.writeStudent(student, recordNumber);                
             }
             else
                 return false;
