@@ -201,7 +201,10 @@ public class MainApp {
             {
                 s.setCurrentGPA(sc.nextDouble("Please enter the student's current GPA (0-100): ", 0.0, 100.0));
             }
-            System.out.println("Record Edited!");
+            if(db.getFile().updateStudent(s))
+                System.out.println("Record Edited!");
+            else
+                System.out.println("Update Failed!");
         }
         else
             System.out.println("Student not found!");
