@@ -222,11 +222,11 @@ public class StudentRandomFile {
         {
             studentsFile.seek((i * RECORD_SIZE) + ID_SIZE); //4, f_name is 2nd field
             String field = IOStringUtils.readFixedString(studentsFile, F_NAME_LENGTH);
-            if(!Pattern.matches(regex, field))
+            if(Pattern.matches(regex, field))
                 results.add(getRecord(i));
             else //if first name didn't match
                 field = IOStringUtils.readFixedString(studentsFile, S_NAME_LENGTH);
-            if(!Pattern.matches(regex, field))
+            if(Pattern.matches(regex, field))
                 results.add(getRecord(i));
             
         }
@@ -264,7 +264,6 @@ public class StudentRandomFile {
     {
         
         try {
-            System.out.println("File Size before: " + studentsFile.length());
             if(!studentCodes.containsKey(student.getID()))
             {
                 int recordNumber = (int)studentsFile.length() / RECORD_SIZE;
@@ -333,6 +332,7 @@ public class StudentRandomFile {
     {
         try {
             studentsFile.setLength(0);
+            studentCodes.clear();
             return true;
         } catch (IOException ex) {
             Logger.getLogger(StudentRandomFile.class.getName()).log(Level.SEVERE, null, ex);
